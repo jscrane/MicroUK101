@@ -9,6 +9,7 @@
 #include "roms/basuk04.h"
 #include "roms/ceggs.h"
 
+Memory memory;
 r6502 cpu(memory);
 
 class SerialDevice: public Memory::Device, public ACIA {
