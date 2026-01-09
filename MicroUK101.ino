@@ -28,6 +28,8 @@ public:
 		_acia.register_read_data_handler([]() {
 			uint8_t b = Serial.read();
 			DBG_EMU(printf("read: %x\r\n", b));
+			if (b == 0x0e)	// ^N
+				hardware_reset();
 			return b;
 		});
 		_acia.register_write_data_handler([](uint8_t b) {
