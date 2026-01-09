@@ -1,6 +1,7 @@
 #include <r65emu.h>
 #include <r6502.h>
 #include <acia.h>
+#include <debugging.h>
 #include "roms/encoder.h"
 #include "roms/toolkit2.h"
 #include "roms/basuk01.h"
@@ -12,23 +13,43 @@
 Memory memory;
 r6502 cpu(memory);
 
-class SerialDevice: public Memory::Device, public ACIA {
+class SerialAcia: public Memory::Device {
 public:
-	SerialDevice(HardwareSerial &s): Memory::Device(2048), _s(s) {}
+	SerialAcia(): Memory::Device(2048) {}
 
-	void operator=(uint8_t b) { ACIA::write(_acc, b); }
-	operator uint8_t() { return ACIA::read(_acc); }
+	void init() {
+		_acia.register_framing_handler([](uint32_t cfg) {
+#if DEBUGGING != DEBUG_NONE
+			DBG_EMU(printf("framing: %x\r\n", cfg));
+#else
+			Serial.begin(TERMINAL_SPEED, cfg);
+#endif
+		});
+		_acia.register_read_data_handler([]() {
+			uint8_t b = Serial.read();
+			DBG_EMU(printf("read: %x\r\n", b));
+			return b;
+		});
+		_acia.register_write_data_handler([](uint8_t b) {
+			DBG_EMU(printf("write: %x\r\n", b));
+			Serial.write(b);
+		});
+		_acia.register_can_rw_handler([](void) {
+			uint8_t s = 0;
+			if (Serial.available() > 0) s++;
+			if (Serial.availableForWrite() > 0) s += 2;
+			DBG_EMU(printf("can_rw: %x\r\n", s));
+			return s;
+		});
+	}
 
-protected:
-	uint8_t read_data() { return _s.read(); }
-	bool acia_more() { return _s.available() > 0; }
-	void write_data(uint8_t b) { _s.write(b); }
-	void acia_framing(uint32_t config) { _s.begin(TERMINAL_SPEED, config); }
+	virtual void operator=(uint8_t b) { _acia.write(_acc, b); }
+	virtual operator uint8_t() { return _acia.read(_acc); }
 
 private:
-	HardwareSerial &_s;
+	ACIA _acia;
 
-} acia(Serial);
+} acia;
 
 prom tk2(toolkit2, 2048);
 prom enc(encoder, 2048);
@@ -57,18 +78,11 @@ void setup() {
 	memory.put(acia, 0xf000);
 	memory.put(cegmon, 0xf800);
 
+	acia.init();
 	hardware_reset();
 }
 
 void loop() {
 
-	if (!cpu.halted()) {
-#if defined(CPU_DEBUG)
-		char buf[256];
-		Serial.println(cpu.status(buf, sizeof(buf)));
-		cpu.run(1);
-#else
-                cpu.run(1000);
-#endif
-	}	
+	hardware_run();
 }
