@@ -28,12 +28,20 @@ public:
 		_acia.register_read_data_handler([]() {
 			uint8_t b = Serial.read();
 			DBG_EMU(printf("read: %x\r\n", b));
-			if (b == 0x0e)	// ^N
+			if (b == 0x0e)		// ^N
 				hardware_reset();
+			else if (b == 0x08)	// BS
+				b = '_';
 			return b;
 		});
 		_acia.register_write_data_handler([](uint8_t b) {
 			DBG_EMU(printf("write: %x\r\n", b));
+			if (b == '_') {
+				Serial.write(0x08);
+				Serial.write(' ');
+				Serial.write(0x08);
+				return;
+			}
 			Serial.write(b);
 		});
 		_acia.register_can_rw_handler([](void) {
