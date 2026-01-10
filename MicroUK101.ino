@@ -8,6 +8,8 @@
 #include "roms/basuk02.h"
 #include "roms/basuk03.h"
 #include "roms/basuk04.h"
+#include "roms/premier_basic5.h"
+#include "roms/premier_basic6.h"
 #include "roms/ceggs.h"
 
 Memory memory;
@@ -67,6 +69,8 @@ prom basic1(basuk01, 2048);
 prom basic2(basuk02, 2048);
 prom basic3(basuk03, 2048);
 prom basic4(basuk04, 2048);
+prom basic5(premier_basic5, 2048);
+prom basic6(premier_basic6, 2048);
 prom cegmon(ceggs, 2048);
 
 ram<> pages[32];
@@ -80,6 +84,8 @@ void setup() {
 
         memory.put(tk2, 0x8000);
         memory.put(enc, 0x8800);
+        memory.put(basic5, 0x9000);
+        memory.put(basic6, 0x9800);
         memory.put(basic1, 0xa000);
         memory.put(basic2, 0xa800);
         memory.put(basic3, 0xb000);

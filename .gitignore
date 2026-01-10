@@ -2,3 +2,4 @@
 *.ino.cpp.o
 *.txt.mk
 .build
+serialout.txt
