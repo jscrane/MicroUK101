@@ -14,6 +14,7 @@
 
 Memory memory;
 r6502 cpu(memory);
+Machine machine(cpu);
 
 class SerialAcia: public Memory::Device {
 public:
@@ -31,7 +32,7 @@ public:
 			uint8_t b = Serial.read();
 			DBG_EMU(printf("read: %x\r\n", b));
 			if (b == 0x0e)		// ^N
-				hardware_reset();
+				machine.reset();
 			else if (b == 0x08)	// BS
 				b = '_';
 			return b;
@@ -77,7 +78,7 @@ ram<> pages[32];
 
 void setup() {
 
-	hardware_init(cpu);
+	machine.init();
 
         for (unsigned i = 0; i < 32; i++)
                 memory.put(pages[i], i * ram<>::page_size);
@@ -95,10 +96,16 @@ void setup() {
 	memory.put(cegmon, 0xf800);
 
 	acia.init();
-	hardware_reset();
+
+	// debugging basic-5
+	machine.register_cpu_debug_handler([]() {
+		return memory[0x7fff] == 1 && cpu.pc() >= 0x9000 && cpu.pc() < 0x9800;
+	});
+
+	machine.reset();
 }
 
 void loop() {
 
-	hardware_run();
+	machine.run();
 }
