@@ -22,11 +22,10 @@ public:
 
 	void init() {
 		_acia.register_framing_handler([](uint32_t cfg) {
-#if DEBUGGING != DEBUG_NONE
-			DBG_EMU(printf("framing: %x\r\n", cfg));
-#else
+#if DEBUGGING == DEBUG_NONE
 			Serial.begin(TERMINAL_SPEED, cfg);
 #endif
+			DBG_EMU(printf("framing: %x\r\n", cfg));
 		});
 		_acia.register_read_data_handler([]() {
 			uint8_t b = Serial.read();
