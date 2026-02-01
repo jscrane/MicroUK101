@@ -48,11 +48,11 @@ public:
 #if DEBUGGING == DEBUG_NONE
       Serial.begin(TERMINAL_SPEED, cfg);
 #endif
-      DBG_EMU(printf("framing: %x\r\n", cfg));
+      DBG_EMU("framing: %x\r\n", cfg);
 		});
 		_acia.register_read_data_handler([]() {
 			uint8_t b = Serial.read();
-			DBG_EMU(printf("read: %x\r\n", b));
+			DBG_EMU("read: %02x", b);
 			if (b == 0x0e)		// ^N
 				machine.reset();
 			else if (b == 0x08)	// BS
@@ -60,7 +60,7 @@ public:
 			return b;
 		});
 		_acia.register_write_data_handler([](uint8_t b) {
-			DBG_EMU(printf("write: %x\r\n", b));
+			DBG_EMU("write: %02x", b);
 			if (b == '_') {
 				Serial.write(0x08);
 				Serial.write(' ');
@@ -73,7 +73,7 @@ public:
 			uint8_t s = 0;
 			if (Serial.available() > 0) s++;
 			if (Serial.availableForWrite() > 0) s += 2;
-			DBG_EMU(printf("can_rw: %x\r\n", s));
+			DBG_EMU("can_rw: %x", s);
 			return s;
 		});
 	}
