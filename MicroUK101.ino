@@ -16,16 +16,39 @@ Memory memory;
 r6502 cpu(memory);
 Machine machine(cpu);
 
+static uint32_t acia_framing(uint8_t b) {
+  switch (b) {
+    case ACIA::ws7e2:
+		  return SERIAL_7E2;
+    case ACIA::ws7o2:
+		  return SERIAL_7O2;
+    case ACIA::ws7e1:
+		  return SERIAL_7E1;
+    case ACIA::ws7o1:
+		  return SERIAL_7O1;
+    case ACIA::ws8n2:
+		  return SERIAL_8N2;
+    case ACIA::ws8n1:
+		  return SERIAL_8N1;
+    case ACIA::ws8e1:
+		  return SERIAL_8E1;
+    case ACIA::ws8o1:
+		  return SERIAL_8O1;
+	}
+  return SERIAL_8N1;
+}
+
 class SerialAcia: public Memory::Device {
 public:
 	SerialAcia(): Memory::Device(2048) {}
 
 	void init() {
-		_acia.register_framing_handler([](uint32_t cfg) {
+		_acia.register_framing_handler([](uint8_t b) {
+      uint32_t cfg = acia_framing(b);
 #if DEBUGGING == DEBUG_NONE
-			Serial.begin(TERMINAL_SPEED, cfg);
+      Serial.begin(TERMINAL_SPEED, cfg);
 #endif
-			DBG_EMU(printf("framing: %x\r\n", cfg));
+      DBG_EMU(printf("framing: %x\r\n", cfg));
 		});
 		_acia.register_read_data_handler([]() {
 			uint8_t b = Serial.read();
