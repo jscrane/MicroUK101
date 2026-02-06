@@ -14,7 +14,7 @@
 
 Memory memory;
 r6502 cpu(memory);
-Machine machine(cpu);
+Arduino machine(cpu);
 
 static uint32_t acia_framing(uint8_t b) {
   switch (b) {
@@ -100,7 +100,7 @@ ram<> pages[32];
 
 void setup() {
 
-	machine.init();
+	machine.begin();
 
         for (unsigned i = 0; i < 32; i++)
                 memory.put(pages[i], i * ram<>::page_size);
