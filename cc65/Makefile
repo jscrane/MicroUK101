@@ -2,7 +2,6 @@ SOURCES := conio.s read.s write.s
 PLATFORM := microuk101
 OBJECTS := $(SOURCES:.s=.o)
 LIBRARY := $(PLATFORM).lib
-EXAMPLES := hello.c
 CC65HOME := /usr/share/cc65
 
 START := 0x1000
@@ -17,14 +16,9 @@ $(LIBRARY): $(OBJECTS)
 %.o: %.s
 	ca65 --cpu 6502 $<
 
-%.txt: %.bin
-	srec_cat $< -binary -offset $(START) -o $@ -os65v
+install: $(LIBRARY)
+	install -c -m 0644 $(LIBRARY) $(CC65HOME)/lib
+	install -c -m 0644 $(PLATFORM).cfg $(CC65HOME)/cfg
 
-%.bin: %.o $(LIBRARY)
-	ld65 -C $(PLATFORM).cfg $< $(LIBRARY) -o $@
-
-clean: clean-examples
+clean:
 	rm -f $(OBJECTS) $(LIBRARY)
-
-clean-examples:
-	rm -f $(EXAMPLES:.c=.s) $(EXAMPLES:.c=.bin) $(EXAMPLES:.c=.txt)
