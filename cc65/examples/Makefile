@@ -1,5 +1,5 @@
 PLATFORM := microuk101
-EXAMPLES := hello.c helloconio.c dungeon.c
+EXAMPLES := hello.c helloconio.c
 START := 0x1000
 
 %.txt: %.bin
