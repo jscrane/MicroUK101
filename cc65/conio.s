@@ -1,6 +1,6 @@
 .include "microuk101.inc"
 
-.export _clrscr, _gotoxy, _cputc, _cputs, _cgetc, _kbhit, _textcolor
+.export _clrscr, _gotoxy, _cputc, _cputs, _cgetc, _kbhit, _textcolor, _cputcxy
 .importzp sp, tmp1, ptr1
 .import popa
 
@@ -10,6 +10,26 @@ CHAR_LBRKT = '['
 CHAR_SEMI  = ';'
 
 .segment "CODE"
+
+; -----------------------------------------------------------
+; void __fastcall__ cputcxy (unsigned char x, unsigned char y, char c);
+; c is in A
+; y is at stack top (sp)
+; x is next on stack (sp+1)
+; -----------------------------------------------------------
+_cputcxy:
+    pha                 ; Save the character (A) for later
+
+    jsr popa            ; Pop Y coordinate from cc65 argument stack into A
+    tax                 ; Move Y to X register (prep for gotoxy call)
+
+    jsr popa            ; Pop X coordinate from cc65 argument stack into A
+    ; Now A = X-coord, X = Y-coord
+
+    jsr _gotoxy         ; Position the cursor
+
+    pla                 ; Restore the character into A
+    jmp _cputc          ; Tail-call cputc to print it and return
 
 _cgetc:
     jsr INPUT
@@ -54,11 +74,11 @@ _cputs:
 @loop:
     lda (ptr1),y        ; Get char
     beq @done           ; Exit if 0
-    
+
     sty tmp1            ; Save Y in a spare ZP byte (defined in zeropage.inc)
     jsr _cputc          ; Call output (A already contains the char)
     ldy tmp1            ; Restore Y
-    
+
     iny
     bne @loop
     inc ptr1+1
@@ -115,7 +135,7 @@ _textcolor:
     ; A = cc65 color (0-15)
     cmp #8          ; Is it a "bright" color?
     bcc @standard
-    
+
     pha             ; Save bright color
     ; Send ESC [ 1 ;
     lda #CHAR_ESC
