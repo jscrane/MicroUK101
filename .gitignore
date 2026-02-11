@@ -1,3 +1,7 @@
+.*.swp
+*.o
+*.lib
+cc65/examples/*.txt
 *.ino.cpp.d
 *.ino.cpp.o
 *.txt.mk
