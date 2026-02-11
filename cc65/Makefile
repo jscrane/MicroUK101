@@ -3,13 +3,13 @@ PLATFORM := microuk101
 OBJECTS := $(SOURCES:.s=.o)
 LIBRARY := $(PLATFORM).lib
 EXAMPLES := hello.c
+CC65HOME := /usr/share/cc65
 
 START := 0x1000
 
-$(LIBRARY): $(LIBRARY)($(OBJECTS))
-
-$(LIBRARY)(%.o): %.o
-	ar65 a $@ $%
+$(LIBRARY): $(OBJECTS)
+	cp $(CC65HOME)/lib/none.lib $@
+	ar65 a $@ $^
 
 %.o: %.c
 	cl65 -c -t none --cpu 6502 $<
@@ -21,7 +21,7 @@ $(LIBRARY)(%.o): %.o
 	srec_cat $< -binary -offset $(START) -o $@ -os65v
 
 %.bin: %.o $(LIBRARY)
-	ld65 -C $(PLATFORM).cfg $< none.lib $(LIBRARY) -o $@
+	ld65 -C $(PLATFORM).cfg $< $(LIBRARY) -o $@
 
 clean: clean-examples
 	rm -f $(OBJECTS) $(LIBRARY)
