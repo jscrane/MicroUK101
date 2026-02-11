@@ -1,7 +1,7 @@
 .include "microuk101.inc"
 
-.export _clrscr, _gotoxy, _cputc, _cgetc, _kbhit, _textcolor
-.importzp sp
+.export _clrscr, _gotoxy, _cputc, _cputs, _cgetc, _kbhit, _textcolor
+.importzp sp, tmp1, ptr1
 .import popa
 
 ; ASCII Constants
@@ -40,6 +40,31 @@ _clrscr:
     jsr OUTPUT
     lda #'H'
     jsr OUTPUT
+    rts
+
+; -----------------------------------------------------------
+; void __fastcall__ cputs (const char* s);
+; String pointer is in A/X (A=low, X=high)
+; -----------------------------------------------------------
+_cputs:
+    sta ptr1            ; Store string pointer low byte
+    stx ptr1+1          ; Store string pointer high byte
+    ldy #$00            ; Initialize index to 0
+
+@loop:
+    lda (ptr1),y        ; Get char
+    beq @done           ; Exit if 0
+    
+    sty tmp1            ; Save Y in a spare ZP byte (defined in zeropage.inc)
+    jsr _cputc          ; Call output (A already contains the char)
+    ldy tmp1            ; Restore Y
+    
+    iny
+    bne @loop
+    inc ptr1+1
+    jmp @loop
+
+@done:
     rts
 
 _gotoxy:

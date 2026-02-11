@@ -8,6 +8,7 @@ START := 0x1000
 
 $(LIBRARY): $(OBJECTS)
 	cp $(CC65HOME)/lib/none.lib $@
+	ar65 d $@ cputs.o
 	ar65 a $@ $^
 
 %.o: %.c
