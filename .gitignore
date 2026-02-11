@@ -1,3 +1,4 @@
+.*.swp
 *.ino.cpp.d
 *.ino.cpp.o
 *.txt.mk
