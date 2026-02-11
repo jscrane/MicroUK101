@@ -19,6 +19,7 @@ $(LIBRARY): $(OBJECTS)
 install: $(LIBRARY)
 	install -c -m 0644 $(LIBRARY) $(CC65HOME)/lib
 	install -c -m 0644 $(PLATFORM).cfg $(CC65HOME)/cfg
+	install -c -m 0644 $(PLATFORM).inc $(CC65HOME)/asminc
 
 clean:
 	rm -f $(OBJECTS) $(LIBRARY)
