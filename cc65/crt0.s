@@ -14,7 +14,7 @@ _init:
     ldx #$FF
     txs             ; Hardware stack at $01FF
 
-    ; --- Redirect Monitor IRQ to our Assembly Handler ---
+    ; --- Redirect Monitor IRQ
     lda #<_irq_handler
     sta IRQ_HOOK
     lda #>_irq_handler
@@ -35,6 +35,6 @@ _init:
     jsr _main       ; Call C code
 
 _exit:
-    sei             ; Disable interrupts so your ISR stops
+    sei             ; Disable interrupts
     jsr donelib     ; Run C destructors
-    jmp NEWMON      ; jump to monitor
+    jmp NEWMON      ; Jump to monitor

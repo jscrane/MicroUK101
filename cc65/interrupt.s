@@ -17,9 +17,9 @@ _irq_handler:
     tya
     pha             ; Save Y
 
-    lda ACIA_STATUS ; Check UART status
+    lda ACIA_STATUS
     and #RDRF_MASK
-    beq @exit       ; If not UART, exit
+    beq @exit
 
     lda ACIA_DATA   ; Read char (clears hardware IRQ)
     ldx rx_head
@@ -52,11 +52,11 @@ _has_char:
     lda rx_tail
     cmp rx_head
     beq @no
-    lda #1          ; True
+    lda #1
     ldx #0
     rts
 @no:
-    lda #0          ; False
+    lda #0
     ldx #0
     rts
 
