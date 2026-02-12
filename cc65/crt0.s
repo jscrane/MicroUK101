@@ -37,7 +37,7 @@ _init:
 _exit:
     sei             ; Disable interrupts so your ISR stops
     jsr donelib     ; Run C destructors
-    jmp NEWMON      ; JUMP TO MONITOR (Replace $FF00 with your ROM's entry)
+    jmp NEWMON      ; jump to monitor
 
 .segment "VECTORS"
 ; We leave this empty because your ROM handles $FFFA-$FFFF.
