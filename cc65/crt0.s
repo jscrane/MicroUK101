@@ -42,4 +42,3 @@ _exit:
 .segment "VECTORS"
 ; We leave this empty because your ROM handles $FFFA-$FFFF.
 ; We only hook the RAM addresses in _init above.
-
