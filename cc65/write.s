@@ -9,8 +9,6 @@
 
 .export         _write
 
-.segment        "CODE"
-
 .proc           _write
 
         sta     ptr3

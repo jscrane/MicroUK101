@@ -27,7 +27,6 @@ begin:  dec     ptr2
         dec     ptr2+1
         beq     done             ; If buffer full, return
 
-;getch:  jsr     INPUT            ; Get character using Monitor ROM call
 getch:  jsr     _get_buffered_char
 	cpx	#$FF
 	beq	getch

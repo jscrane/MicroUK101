@@ -16,9 +16,9 @@ _init:
 
     ; --- Redirect Monitor IRQ to our Assembly Handler ---
     lda #<_irq_handler
-    sta OSI_IRQ_HOOK
+    sta IRQ_HOOK
     lda #>_irq_handler
-    sta OSI_IRQ_HOOK+1
+    sta IRQ_HOOK+1
 
     ; --- Initialize CC65 Parameter Stack ---
     lda #<(__RAM_START__ + __RAM_SIZE__)
@@ -31,14 +31,10 @@ _init:
     jsr copydata    ; Initialize DATA segment
     jsr initlib     ; Run C constructors
 
-    cli             ; ENABLE INTERRUPTS for UART
+    cli             ; Enable interrupts for ACIA
     jsr _main       ; Call C code
 
 _exit:
     sei             ; Disable interrupts so your ISR stops
     jsr donelib     ; Run C destructors
     jmp NEWMON      ; jump to monitor
-
-.segment "VECTORS"
-; We leave this empty because your ROM handles $FFFA-$FFFF.
-; We only hook the RAM addresses in _init above.

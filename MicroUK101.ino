@@ -77,7 +77,7 @@ public:
 			return s;
 		});
     _acia.register_irq_handler([](bool irq) {
-      if (irq) cpu.raise(0);
+     if (irq) cpu.raise(0);
     });
 	}
 
