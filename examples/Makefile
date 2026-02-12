@@ -11,4 +11,4 @@ START := 0x1000
 	cl65 $(CPPFLAGS) $(CFLAGS) -C $(PLATFORM).cfg $< $(PLATFORM).lib -o $@
 
 clean:
-	rm -f $(EXAMPLES:.c=.s) $(EXAMPLES:.c=.bin) $(EXAMPLES:.c=.txt)
+	rm -f $(EXAMPLES:.c=.o) $(EXAMPLES:.c=.bin) $(EXAMPLES:.c=.txt)
