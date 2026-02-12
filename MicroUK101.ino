@@ -100,32 +100,31 @@ ram<> pages[32];
 
 void setup() {
 
-  machine.begin();
+	machine.begin();
 
-  for (unsigned i = 0; i < 32; i++)
-    memory.put(pages[i], i * ram<>::page_size);
+        for (unsigned i = 0; i < 32; i++)
+                memory.put(pages[i], i * ram<>::page_size);
 
-  memory.put(tk2, 0x8000);
-  memory.put(enc, 0x8800);
-  memory.put(basic5, 0x9000);
-  memory.put(basic6, 0x9800);
-  memory.put(basic1, 0xa000);
-  memory.put(basic2, 0xa800);
-  memory.put(basic3, 0xb000);
-  memory.put(basic4, 0xb800);
+        memory.put(tk2, 0x8000);
+        memory.put(enc, 0x8800);
+        memory.put(basic5, 0x9000);
+        memory.put(basic6, 0x9800);
+        memory.put(basic1, 0xa000);
+        memory.put(basic2, 0xa800);
+        memory.put(basic3, 0xb000);
+        memory.put(basic4, 0xb800);
 
-  memory.put(acia, 0xf000);
-  memory.put(cegmon, 0xf800);
+	memory.put(acia, 0xf000);
+	memory.put(cegmon, 0xf800);
 
 	acia.init();
 
-  /* debugging
-  machine.register_cpu_debug_handler([]() {
-   return cpu.pc() >= 0x1000 && cpu.pc() < 0x2000;
-  });
-  */
+	// debugging basic-5
+	machine.register_cpu_debug_handler([]() {
+		return memory[0x7fff] == 1 && cpu.pc() >= 0x9000 && cpu.pc() < 0x9800;
+	});
 
-  machine.reset();
+	machine.reset();
 }
 
 void loop() {
