@@ -76,6 +76,9 @@ public:
 			DBG_EMU("can_rw: %x", s);
 			return s;
 		});
+    _acia.register_irq_handler([](bool irq) {
+      if (irq) cpu.raise(0);
+    });
 	}
 
 	virtual void operator=(uint8_t b) { _acia.write(_acc, b); }

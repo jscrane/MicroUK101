@@ -6,6 +6,7 @@
 
 .import         popax, popptr1
 .importzp       ptr1, ptr2, ptr3
+.import		_get_buffered_char
 
 .export         _read
 
@@ -26,7 +27,11 @@ begin:  dec     ptr2
         dec     ptr2+1
         beq     done             ; If buffer full, return
 
-getch:  jsr     INPUT           ; Get character using Monitor ROM call
+;getch:  jsr     INPUT            ; Get character using Monitor ROM call
+getch:  jsr     _get_buffered_char
+	cpx	#$FF
+	beq	getch
+
         and     #$7F             ; Clear top bit
         cmp     #$0D             ; Check for '\r'
         bne     putch            ; ...if CR character

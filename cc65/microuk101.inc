@@ -14,3 +14,5 @@ ACIA_DATA   = $F001
 ; 1 = Character waiting, 0 = Empty
 RDRF_MASK   = %00000001
 
+; OSI/UK101 Monitor RAM Vector
+OSI_IRQ_HOOK = $0237

@@ -1,4 +1,4 @@
-SOURCES := conio.s read.s write.s
+SOURCES := conio.s read.s write.s crt0.s interrupt.s
 PLATFORM := microuk101
 OBJECTS := $(SOURCES:.s=.o)
 LIBRARY := $(PLATFORM).lib
@@ -7,8 +7,6 @@ CC65HOME := /usr/share/cc65
 START := 0x1000
 
 $(LIBRARY): $(OBJECTS)
-	cp $(CC65HOME)/lib/none.lib $@
-	ar65 d $@ cputs.o
 	ar65 a $@ $^
 
 %.o: %.c
