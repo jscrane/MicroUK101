@@ -26,6 +26,8 @@ _irq_handler:
     sta rx_buf,x    ; Store in buffer
     inc rx_head     ; Advance head
 
+    jsr OUTPUT
+
 @exit:
     pla
     tay             ; Restore Y
