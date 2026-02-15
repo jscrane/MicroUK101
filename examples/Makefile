@@ -1,5 +1,5 @@
 PLATFORM := microuk101
-EXAMPLES := hello.c helloconio.c adventure1.c life.c
+EXAMPLES := hello.c helloconio.c adventure1.c life.c interrupt.c
 CPPFLAGS := -D__MICROUK101__
 CFLAGS := -t none -O --cpu 6502 -C $(PLATFORM).cfg
 START := 0x1000

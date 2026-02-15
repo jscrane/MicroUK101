@@ -1,4 +1,4 @@
-SOURCES := conio.s read.s write.s crt0.s
+SOURCES := conio.s read.s write.s crt0.s interrupt.s
 PLATFORM := microuk101
 OBJECTS := $(SOURCES:.s=.o)
 LIBRARY := $(PLATFORM).lib
