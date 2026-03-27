@@ -84,16 +84,13 @@ prom basic4(basuk04, 2048);
 prom basic5(premier_basic5, 2048);
 prom basic6(premier_basic6, 2048);
 prom cegmon(ceggs, 2048);
-
-ram<> pages[32];
+ram<32768> page;
 
 void setup() {
 
 	machine.begin();
 
-	for (unsigned i = 0; i < 32; i++)
-		memory.put(pages[i], i * ram<>::page_size);
-
+	memory.put(page, 0x0000);
 	memory.put(tk2, 0x8000);
 	memory.put(enc, 0x8800);
 	memory.put(basic5, 0x9000);
@@ -102,18 +99,10 @@ void setup() {
 	memory.put(basic2, 0xa800);
 	memory.put(basic3, 0xb000);
 	memory.put(basic4, 0xb800);
-
 	memory.put(acia, 0xf000, 2048);
 	memory.put(cegmon, 0xf800);
 
 	acia_init();
-
-	/* debugging
-	machine.register_cpu_debug_handler([]() {
-	 return cpu.pc() >= 0x1000 && cpu.pc() < 0x2000;
-	});
-	*/
-
 	machine.reset();
 }
 
